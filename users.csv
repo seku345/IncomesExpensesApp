@@ -1,0 +1,17 @@
+login;password;name;balance;path_to_data
+Admin1337;qwerty;Semen;10000;../transactions/Admin1337.csv
+silverDragon;FieryWings123;John Smith;1000;../transactions/silverDragon.csv
+stealthNinja;ShadowStrike456;Jane Doe;500;../transactions/stealthNinja.csv
+musicMaestro;MelodyMaker789;Robert Johnson;750;../transactions/musicMaestro.csv
+adventureSeeker;ExploreTheUnknown123;Mary Brown;1200;../transactions/adventureSeeker.csv
+coffeeAddict;EspressoLover456;David Lee;900;../transactions/coffeeAddict.csv
+natureEnthusiast;OutdoorExplorer789;Lisa Taylor;1500;../transactions/natureEnthusiast.csv
+techGuru;GeekyInnovator123;Michael Wilson;800;../transactions/techGuru.csv
+bookworm;LiteraryDreamer456;Jennifer Evans;650;../transactions/bookworm.csv
+fitnessFreak;WorkoutWarrior789;William Anderson;1100;../transactions/fitnessFreak.csv
+petLover;AnimalAdmirer123;Sarah Baker;950;../transactions/petLover.csv
+starGazer;CosmicExplorer456;James Martin;1300;../transactions/starGazer.csv
+artAficionado;CreativeMind789;Laura Garcia;700;../transactions/artAficionado.csv
+foodieFan;CulinaryConnoisseur123;Charles Clark;850;../transactions/foodieFan.csv
+wanderlust;Globetrotter456;Linda Hernandez;950;../transactions/wanderlust.csv
+movieBuff;FilmCritic789;Daniel White;600;../transactions/movieBuff.csv

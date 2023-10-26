@@ -1,0 +1,11 @@
+value;description;category;transfer;datetime
+-250.50;Grocery shopping;Food;0;2023.10.26 08:15:00
+-150.25;Dinner at a restaurant;Dining;0;2023.10.25 19:30:00
+500;Salary deposit;Income;0;2023.10.25 14:00:00
+-50;Gasoline;Transportation;0;2023.10.24 10:45:00
+-75.60;Movie tickets;Entertainment;0;2023.10.23 21:00:00
+-200;Transfer to coffeeAddict;Transfer;coffeeAddict;2023.10.22 13:45:00
+-300;Online shopping;Shopping;0;2023.10.21 16:30:00
+-15.75;Coffee with friends;Dining;0;2023.10.20 09:00:00
+-40;Taxi ride;Transportation;0;2023.10.19 17:15:00
+1000;Transfer from musicMaestro;Transfer;musicMaestro;2023.10.18 12:20:00

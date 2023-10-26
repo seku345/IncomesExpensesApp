@@ -248,6 +248,12 @@ IncomesExpensesApp_IS_TOP_LEVEL:STATIC=ON
 //Value Computed by CMake
 IncomesExpensesApp_SOURCE_DIR:STATIC=D:/Programming/Projects/IncomesExpensesApp
 
+//The directory containing a CMake configuration file for json-develop.
+json-develop_DIR:PATH=json-develop_DIR-NOTFOUND
+
+//The directory containing a CMake configuration file for nlohmann_json.
+nlohmann_json_DIR:PATH=nlohmann_json_DIR-NOTFOUND
+
 
 ########################
 # INTERNAL cache entries
