@@ -2,6 +2,7 @@
 #include "fstream"
 #include "string"
 #include "vector"
+#include "array"
 #include "map"
 #include "ctime"
 #include "limits"
@@ -22,7 +23,7 @@ struct User
     std::string login;
     std::string password;
     std::string name;
-    int balance = 0;
+    float balance = 0.0;
     std::string path_to_data;
     std::vector<Transaction> data;
 
@@ -61,7 +62,35 @@ void load_db(std::string const& path, std::vector<Transaction>& data)
 
 void save_db(std::string const& path, std::vector<Transaction> const& data)
 {
+    // creating empty file if it's not exists
+    std::ofstream file(path);
+    if (file.is_open()) file.close();
+    else std::cerr << "An error was occurred!";
 
+    rapidcsv::Document doc(path,
+                           rapidcsv::LabelParams(-1, -1),
+                           rapidcsv::SeparatorParams(';'));
+    // preparing to saving
+    doc.Clear();
+    std::vector<std::string> label_line = {"value",
+                                           "description",
+                                           "category",
+                                           "transfer",
+                                           "datetime"};
+    int row_index = 0;
+    doc.SetRow<std::string>(row_index, label_line);
+
+    for (Transaction const& transaction : data)
+    {
+        row_index++;
+        std::vector<std::string> line = {std::to_string(transaction.value),
+                                         transaction.description,
+                                         transaction.category,
+                                         transaction.transfer,
+                                         transaction.datetime};
+        doc.SetRow<std::string>(row_index, line);
+    }
+    doc.Save(path);
 }
 
 void load(std::string const& path, std::map<std::string, User>& users)
@@ -88,7 +117,7 @@ void load(std::string const& path, std::map<std::string, User>& users)
         std::string login = doc.GetColumn<std::string>("login")[i];
         std::string password = doc.GetColumn<std::string>("password")[i];
         std::string name = doc.GetColumn<std::string>("name")[i];
-        int balance = doc.GetColumn<int>("balance")[i];
+        float balance = doc.GetColumn<float>("balance")[i];
 
         std::string path_to_data = doc.GetColumn<std::string>("path_to_data")[i];
 
@@ -104,14 +133,37 @@ void load(std::string const& path, std::map<std::string, User>& users)
 #pragma clang diagnostic ignored "-Wc++17-extensions"
 void save(std::string const& path, std::map<std::string, User> const& users)
 {
-    rapidcsv::Document doc(path);
+    // creating empty file if it's not exists
+    std::ofstream file(path);
+    if (file.is_open()) file.close();
+    else std::cerr << "An error was occurred!";
 
+    rapidcsv::Document doc(path,
+                           rapidcsv::LabelParams(-1, -1),
+                           rapidcsv::SeparatorParams(';'));
 
+    // preparing to saving
+    doc.Clear();
+    std::vector<std::string> label_line = {"login",
+                                           "password",
+                                           "name",
+                                           "balance",
+                                           "path_to_data"};
+    int row_index = 0;
+    doc.SetRow<std::string>(row_index, label_line);
 
     for (auto const& [login, user]: users)
     {
+        row_index++;
+        std::vector<std::string> line = {user.login,
+                                         user.password,
+                                         user.name,
+                                         std::to_string(user.balance),
+                                         user.path_to_data};
+        doc.SetRow<std::string>(row_index, line);
         save_db(user.path_to_data, user.data);
     }
+    doc.Save(path);
 }
 #pragma clang diagnostic pop
 
@@ -119,7 +171,9 @@ int main()
 {
     std::map<std::string, User> users;
     load("../users.csv", users);
-    
+
+    save("../users.csv", users);
+//    save_db("test.csv", users["Admin1337"].data);
 //    std::cout << users.size() << ' ' << users["Admin1337"].balance << ' ' << users["Admin1337"].data.size() << ' ' << users["Admin1337"].data[3].datetime << '\n';
 //    std::cout << users["musicMaestro"].data.size();
 }
