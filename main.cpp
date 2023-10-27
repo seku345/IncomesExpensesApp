@@ -21,7 +21,7 @@ struct Transaction
 struct User
 {
     std::string login;
-    std::string password;
+    std::string password; //TODO PASSWORD ENCRYPTION
     std::string name;
     float balance = 0.0;
     std::string path_to_data;
@@ -293,11 +293,73 @@ void authorisation(std::map<std::string, User>& users, std::string& active_user)
     }
 }
 
+void new_transaction(std::map<std::string, User>& users, std::string& active_user)
+{
+
+}
+
+void get_transactions(std::map<std::string, User>& users, std::string& active_user)
+{
+
+}
+
+void budgets(std::map<std::string, User>& users, std::string& active_user)
+{
+
+}
+
+void view_statistics(std::map<std::string, User>& users, std::string& active_user)
+{
+
+}
+
 void main_menu(std::map<std::string, User>& users, std::string& active_user)
 {
     clear_screen();
 
-    std::cout
+    std::cout << "Hello, " << users[active_user].name << '\n';
+    std::cout << "Here are some information about your account:\n"
+              << "Login: " << users[active_user].login << '\n'
+              << "Password: " << users[active_user].password << '\n'
+              << "Name: " << users[active_user].name << '\n'
+              << "Balance: " << users[active_user].balance << '\n';
+    std::string action;
+    bool is_action_correct;
+    do {
+        is_action_correct = true;
+        std::cout << "\nWhat you want to do?\n"
+                  << "1. Make a new transaction\n"
+                  << "2. View transaction history\n"
+                  << "3. Set the budget\n"
+                  << "4. View statistics\n"
+                  << "5. Sign out of the account\n";
+        std::cin >> action;
+        if (action == "1")
+        {
+            new_transaction(users, active_user);
+        }
+        else if (action == "2")
+        {
+            get_transactions(users, active_user);
+        }
+        else if (action == "3")
+        {
+            budgets(users, active_user);
+        }
+        else if (action == "4")
+        {
+            view_statistics(users, active_user);
+        }
+        else if (action == "5")
+        {
+            std::cout << "Saving your data and exiting...\n";
+            return;
+        }
+        else
+        {
+            is_action_correct = false;
+        }
+    } while (not is_action_correct);
 }
 
 int main()
@@ -305,13 +367,11 @@ int main()
     std::map<std::string, User> users;
     load("../users.csv", users);
 
-    std::string active_user = users["Admin1337"].login;
+    std::string active_user;
 
     authorisation(users, active_user);
 
     main_menu(users, active_user);
-
-    std::cout << active_user;
 
     save("../users.csv", users);
 }
