@@ -167,7 +167,51 @@ void save(std::string const& path, std::map<std::string, User> const& users)
 }
 #pragma clang diagnostic pop
 
-void authorization()
+void Login(std::map<std::string, User>& users, std::string& active_user);
+void Registration(std::map<std::string, User>& users, std::string& active_user);
+
+void Login(std::map<std::string, User>& users, std::string& active_user)
+{
+    std::string login, password;
+    std::cout << "Enter your login or R letter if you want to register: ";
+    std::cin >> login;
+    if (login == "R" or login == "r")
+    {
+        Registration(users, active_user);
+        return;
+    }
+    else if (users.contains(login))
+    {
+        bool is_password_correct = false;
+        do {
+            std::cout << "Enter your password: ";
+            std::cin >> password;
+            if (users[login].password == password)
+            {
+                is_password_correct = true;
+                std::cout << "Welcome back!\n";
+                active_user = users[login].login;
+            }
+            else
+            {
+                std::cout << "Incorrect password! Try again";
+            }
+        } while (not is_password_correct);
+    }
+    else
+    {
+        std::cout << "This login isn't in our system. Maybe you made mistake, try again.\n";
+        Login(users, active_user);
+        return;
+    }
+}
+
+void Registration(std::map<std::string, User>& users, std::string& active_user)
+{
+
+}
+
+void authorisation(std::map<std::string, User>& users, std::string& active_user)
 {
     std::cout << "Hello! Welcome to InExApp!\n" <<
                 "Are you already have an account in our system?\n" <<
@@ -176,16 +220,19 @@ void authorization()
     std::cin >> choice;
     if (choice == "Y" or choice == "y")
     {
-
+        Login(users, active_user);
+        return;
     }
     else if (choice == "N" or choice == "n")
     {
-
+        Registration(users, active_user);
+        return;
     }
     else
     {
         std::cout << "Invalid input! Try again.\n";
-        authorization();
+        authorisation(users, active_user);
+        return;
     }
 }
 
@@ -193,6 +240,12 @@ int main()
 {
     std::map<std::string, User> users;
     load("../users.csv", users);
+
+    std::string active_user = users["Admin1337"].login;
+
+    authorisation(users, active_user);
+
+    std::cout << active_user;
 
     save("../users.csv", users);
 }
