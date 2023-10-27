@@ -2,11 +2,11 @@
 #include "fstream"
 #include "string"
 #include "vector"
-#include "array"
 #include "map"
 #include "ctime"
 #include "limits"
 #include "windows.h"
+#include "regex"
 #include "include/rapidcsv.h"
 
 struct Transaction
@@ -167,13 +167,32 @@ void save(std::string const& path, std::map<std::string, User> const& users)
 }
 #pragma clang diagnostic pop
 
+void authorization()
+{
+    std::cout << "Hello! Welcome to InExApp!\n" <<
+                "Are you already have an account in our system?\n" <<
+                "Type Y if yes or N if no and you want to create a new account: ";
+    std::string choice;
+    std::cin >> choice;
+    if (choice == "Y" or choice == "y")
+    {
+
+    }
+    else if (choice == "N" or choice == "n")
+    {
+
+    }
+    else
+    {
+        std::cout << "Invalid input! Try again.\n";
+        authorization();
+    }
+}
+
 int main()
 {
     std::map<std::string, User> users;
     load("../users.csv", users);
 
     save("../users.csv", users);
-//    save_db("test.csv", users["Admin1337"].data);
-//    std::cout << users.size() << ' ' << users["Admin1337"].balance << ' ' << users["Admin1337"].data.size() << ' ' << users["Admin1337"].data[3].datetime << '\n';
-//    std::cout << users["musicMaestro"].data.size();
 }
