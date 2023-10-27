@@ -208,7 +208,40 @@ void Login(std::map<std::string, User>& users, std::string& active_user)
 
 void Registration(std::map<std::string, User>& users, std::string& active_user)
 {
+    std::string login, password, name;
+    std::cout << "Make up a login or type L letter if you want to login: ";
+    std::cin >> login;
+    if (login == "L" or login == "l")
+    {
+        Login(users, active_user);
+        return;
+    }
+    else if (not users.contains(login))
+    {
+        bool is_password_correct = false;
+        std::regex password_pattern("^(?=.*[A-Z])(?=.*\\d)(?=.*\\W).{8,}$");
+        do {
+            std::cout << "Make up a password: ";
+            if (std::regex_match(password, password_pattern))
+            {
+                is_password_correct = true;
+                std::cout << "Write your name: ";
+                std::cin >> name;
+                float balance = 0.0;
+                std::string path_to_data = "../transactions/" + login + ".csv";
 
+                User new_user = {login, password, name, balance, path_to_data};
+                users.emplace(new_user.login, new_user);
+                active_user = new_user.login;
+            }
+        } while (not is_password_correct);
+    }
+    else
+    {
+        std::cout << "This login is already registered. Try another or login.\n";
+        Registration(users, active_user);
+        return;
+    }
 }
 
 void authorisation(std::map<std::string, User>& users, std::string& active_user)
