@@ -1,17 +1,18 @@
 login;password;name;balance;path_to_data
 Admin1337;qwerty;Semen;10000.000000;../transactions/Admin1337.csv
-adventureSeeker;ExploreTheUnknown123;Mary Brown;1200.000000;../transactions/adventureSeeker.csv
-artAficionado;CreativeMind789;Laura Garcia;700.000000;../transactions/artAficionado.csv
-bookworm;LiteraryDreamer456;Jennifer Evans;650.000000;../transactions/bookworm.csv
-coffeeAddict;EspressoLover456;David Lee;900.000000;../transactions/coffeeAddict.csv
-fitnessFreak;WorkoutWarrior789;William Anderson;1100.000000;../transactions/fitnessFreak.csv
-foodieFan;CulinaryConnoisseur123;Charles Clark;850.000000;../transactions/foodieFan.csv
-movieBuff;FilmCritic789;Daniel White;600.000000;../transactions/movieBuff.csv
-musicMaestro;MelodyMaker789;Robert Johnson;750.000000;../transactions/musicMaestro.csv
-natureEnthusiast;OutdoorExplorer789;Lisa Taylor;1500.000000;../transactions/natureEnthusiast.csv
-petLover;AnimalAdmirer123;Sarah Baker;950.000000;../transactions/petLover.csv
-silverDragon;FieryWings123;John Smith;1000.000000;../transactions/silverDragon.csv
-starGazer;CosmicExplorer456;James Martin;1300.000000;../transactions/starGazer.csv
-stealthNinja;ShadowStrike456;Jane Doe;500.000000;../transactions/stealthNinja.csv
-techGuru;GeekyInnovator123;Michael Wilson;800.000000;../transactions/techGuru.csv
-wanderlust;Globetrotter456;Linda Hernandez;950.000000;../transactions/wanderlust.csv
+adventureSeeker;ExploreTheUnknown123;"Mary Brown";1200.000000;../transactions/adventureSeeker.csv
+artAficionado;CreativeMind789;"Laura Garcia";700.000000;../transactions/artAficionado.csv
+bookworm;LiteraryDreamer456;"Jennifer Evans";650.000000;../transactions/bookworm.csv
+cema34500;Qwerty123!;Semenka;0.000000;../transactions/cema34500.csv
+coffeeAddict;EspressoLover456;"David Lee";900.000000;../transactions/coffeeAddict.csv
+fitnessFreak;WorkoutWarrior789;"William Anderson";1100.000000;../transactions/fitnessFreak.csv
+foodieFan;CulinaryConnoisseur123;"Charles Clark";850.000000;../transactions/foodieFan.csv
+movieBuff;FilmCritic789;"Daniel White";600.000000;../transactions/movieBuff.csv
+musicMaestro;MelodyMaker789;"Robert Johnson";750.000000;../transactions/musicMaestro.csv
+natureEnthusiast;OutdoorExplorer789;"Lisa Taylor";1500.000000;../transactions/natureEnthusiast.csv
+petLover;AnimalAdmirer123;"Sarah Baker";950.000000;../transactions/petLover.csv
+silverDragon;FieryWings123;"John Smith";1000.000000;../transactions/silverDragon.csv
+starGazer;CosmicExplorer456;"James Martin";1300.000000;../transactions/starGazer.csv
+stealthNinja;ShadowStrike456;"Jane Doe";500.000000;../transactions/stealthNinja.csv
+techGuru;GeekyInnovator123;"Michael Wilson";800.000000;../transactions/techGuru.csv
+wanderlust;Globetrotter456;"Linda Hernandez";950.000000;../transactions/wanderlust.csv

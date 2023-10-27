@@ -29,6 +29,18 @@ struct User
 
 };
 
+void clear_screen(char fill = ' ')
+{
+    COORD tl = {0, 0};
+    CONSOLE_SCREEN_BUFFER_INFO s;
+    HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+    GetConsoleScreenBufferInfo(console, &s);
+    DWORD written, cells = s.dwSize.X * s.dwSize.Y;
+    FillConsoleOutputCharacter(console, fill, cells, tl, &written);
+    FillConsoleOutputAttribute(console, s.wAttributes, cells, tl, &written);
+    SetConsoleCursorPosition(console, tl);
+}
+
 void load_db(std::string const& path, std::vector<Transaction>& data)
 {
     // checking if the file exists
@@ -172,6 +184,8 @@ void Registration(std::map<std::string, User>& users, std::string& active_user);
 
 void Login(std::map<std::string, User>& users, std::string& active_user)
 {
+    clear_screen();
+
     std::string login, password;
     std::cout << "Enter your login or R letter if you want to register: ";
     std::cin >> login;
@@ -208,7 +222,10 @@ void Login(std::map<std::string, User>& users, std::string& active_user)
 
 void Registration(std::map<std::string, User>& users, std::string& active_user)
 {
-    std::string login, password, name;
+    clear_screen();
+
+    std::string login, password;
+    char name[32];
     std::cout << "Make up a login or type L letter if you want to login: ";
     std::cin >> login;
     if (login == "L" or login == "l")
@@ -222,17 +239,22 @@ void Registration(std::map<std::string, User>& users, std::string& active_user)
         std::regex password_pattern("^(?=.*[A-Z])(?=.*\\d)(?=.*\\W).{8,}$");
         do {
             std::cout << "Make up a password: ";
+            std::cin >> password;
             if (std::regex_match(password, password_pattern))
             {
                 is_password_correct = true;
                 std::cout << "Write your name: ";
-                std::cin >> name;
+                std::cin.getline(name, 32);
                 float balance = 0.0;
                 std::string path_to_data = "../transactions/" + login + ".csv";
 
                 User new_user = {login, password, name, balance, path_to_data};
                 users.emplace(new_user.login, new_user);
                 active_user = new_user.login;
+            }
+            else
+            {
+                std::cout << "It's too weak password. It must contain at least 1 capital letter, 1 digit, 1 special character and be at least 8 in length.\n";
             }
         } while (not is_password_correct);
     }
@@ -246,6 +268,8 @@ void Registration(std::map<std::string, User>& users, std::string& active_user)
 
 void authorisation(std::map<std::string, User>& users, std::string& active_user)
 {
+    clear_screen();
+
     std::cout << "Hello! Welcome to InExApp!\n" <<
                 "Are you already have an account in our system?\n" <<
                 "Type Y if yes or N if no and you want to create a new account: ";
@@ -269,6 +293,13 @@ void authorisation(std::map<std::string, User>& users, std::string& active_user)
     }
 }
 
+void main_menu(std::map<std::string, User>& users, std::string& active_user)
+{
+    clear_screen();
+
+    std::cout
+}
+
 int main()
 {
     std::map<std::string, User> users;
@@ -277,6 +308,8 @@ int main()
     std::string active_user = users["Admin1337"].login;
 
     authorisation(users, active_user);
+
+    main_menu(users, active_user);
 
     std::cout << active_user;
 
