@@ -29,6 +29,19 @@ struct User
 
 };
 
+void switch_color(std::string const& color = "white")
+{
+    int color_code = 15;
+    if (color == "red") color_code = 12;
+    else if (color == "yellow") color_code = 14;
+    else if (color == "green") color_code = 10;
+    else if (color == "blue") color_code = 9;
+    else if (color == "black") color_code = 16;
+    else if (color == "white") color_code = 15;
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, color_code);
+}
+
 void clear_screen(char fill = ' ')
 {
     COORD tl = {0, 0};
@@ -179,19 +192,24 @@ void save(std::string const& path, std::map<std::string, User> const& users)
 }
 #pragma clang diagnostic pop
 
-void Login(std::map<std::string, User>& users, std::string& active_user);
-void Registration(std::map<std::string, User>& users, std::string& active_user);
+void Login(std::map<std::string, User>& users, std::string& active_user, bool& is_working, bool& is_in_account);
+void Registration(std::map<std::string, User>& users, std::string& active_user, bool& is_working, bool& is_in_account);
 
-void Login(std::map<std::string, User>& users, std::string& active_user)
+void Login(std::map<std::string, User>& users, std::string& active_user, bool& is_working, bool& is_in_account)
 {
     clear_screen();
 
     std::string login, password;
-    std::cout << "Enter your login or R letter if you want to register: ";
+    std::cout << "Enter your login or R letter if you want to register\nor 0 to exit: ";
     std::cin >> login;
-    if (login == "R" or login == "r")
+    if (login == "0")
     {
-        Registration(users, active_user);
+        is_working = false;
+        return;
+    }
+    else if (login == "R" or login == "r")
+    {
+        Registration(users, active_user, is_working, is_in_account);
         return;
     }
     else if (users.contains(login))
@@ -205,32 +223,41 @@ void Login(std::map<std::string, User>& users, std::string& active_user)
                 is_password_correct = true;
                 std::cout << "Welcome back!\n";
                 active_user = users[login].login;
+                is_in_account = true;
             }
             else
             {
-                std::cout << "Incorrect password! Try again";
+                std::cout << "Incorrect password! Try again.";
+                Sleep(3000);
+                clear_screen();
             }
         } while (not is_password_correct);
     }
     else
     {
         std::cout << "This login isn't in our system. Maybe you made mistake, try again.\n";
-        Login(users, active_user);
+        Sleep(3000);
+        Login(users, active_user, is_working, is_in_account);
         return;
     }
 }
 
-void Registration(std::map<std::string, User>& users, std::string& active_user)
+void Registration(std::map<std::string, User>& users, std::string& active_user, bool& is_working, bool& is_in_account)
 {
     clear_screen();
 
     std::string login, password;
     char name[32];
-    std::cout << "Make up a login or type L letter if you want to login: ";
+    std::cout << "Make up a login or type L letter if you want to login\nor 0 to exit: ";
     std::cin >> login;
+    if (login == "0")
+    {
+        is_working = false;
+        return;
+    }
     if (login == "L" or login == "l")
     {
-        Login(users, active_user);
+        Login(users, active_user, is_working, is_in_account);
         return;
     }
     else if (not users.contains(login))
@@ -243,6 +270,7 @@ void Registration(std::map<std::string, User>& users, std::string& active_user)
             if (std::regex_match(password, password_pattern))
             {
                 is_password_correct = true;
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cout << "Write your name: ";
                 std::cin.getline(name, 32);
                 float balance = 0.0;
@@ -251,73 +279,144 @@ void Registration(std::map<std::string, User>& users, std::string& active_user)
                 User new_user = {login, password, name, balance, path_to_data};
                 users.emplace(new_user.login, new_user);
                 active_user = new_user.login;
+                is_in_account = true;
             }
             else
             {
-                std::cout << "It's too weak password. It must contain at least 1 capital letter, 1 digit, 1 special character and be at least 8 in length.\n";
+                std::cout << "It's too weak password. It must contain at least 1 capital letter, 1 digit,\n1 special character and be at least 8 in length.\n";
+                Sleep(3000);
+                clear_screen();
             }
         } while (not is_password_correct);
     }
     else
     {
         std::cout << "This login is already registered. Try another or login.\n";
-        Registration(users, active_user);
+        Sleep(3000);
+        Registration(users, active_user, is_working, is_in_account);
         return;
     }
 }
 
-void authorisation(std::map<std::string, User>& users, std::string& active_user)
+void authorisation(std::map<std::string, User>& users, std::string& active_user, bool& is_working, bool& is_in_account)
 {
     clear_screen();
 
-    std::cout << "Hello! Welcome to InExApp!\n" <<
-                "Are you already have an account in our system?\n" <<
-                "Type Y if yes or N if no and you want to create a new account: ";
+    std::cout << "Hello! Welcome to InExApp!\n"
+              << "Are you already have an account in our system?\n"
+              << "Type Y if yes or N if no and you want to create a new account\nor 0 if you want to exit: ";
     std::string choice;
     std::cin >> choice;
-    if (choice == "Y" or choice == "y")
+    if (choice == "0")
     {
-        Login(users, active_user);
+        is_working = false;
+        return;
+    }
+    else if (choice == "Y" or choice == "y")
+    {
+        Login(users, active_user, is_working, is_in_account);
         return;
     }
     else if (choice == "N" or choice == "n")
     {
-        Registration(users, active_user);
+        Registration(users, active_user, is_working, is_in_account);
         return;
     }
     else
     {
         std::cout << "Invalid input! Try again.\n";
-        authorisation(users, active_user);
+        authorisation(users, active_user, is_working, is_in_account);
         return;
     }
 }
 
+bool is_in(std::string const& x, std::vector<std::string> const& a)
+{
+    for (std::string const& s : a)
+    {
+        if (s == x)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 void new_transaction(std::map<std::string, User>& users, std::string& active_user)
 {
+    clear_screen();
 
+    std::cout << "What kind of transaction is it?\n"
+              << " 1. Transfer to another person\n"
+              << " 2. Food & Beverages\n"
+              << " 3. Entertainment\n"
+              << " 4. Transportation\n"
+              << " 5. Health & Medicals\n"
+              << " 6. Housing & Utilities\n"
+              << " 7. Clothing & Footwear\n"
+              << " 8. Education\n"
+              << " 9. Electronics & Gadgets\n"
+              << "10. Travel & Vacation\n"
+              << "11. Gifts & Donation\n"
+              << "12. Salary\n"
+              << "13. Investments\n"
+              << "14. Passive Income\n"
+              << "15. Sales & Business\n"
+              << "16. Other transactions\n"
+              << "\n\nOr type 0 to return to the main menu.\n";
+    std::string choice;
+    std::cin >> choice;
+    std::vector<std::string> const variants_exp = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "11"};
+    std::vector<std::string> const variants_pos = {"12", "13", "14", "15"};
+    if (choice == "0")
+    {
+        return;
+    }
+    else if (choice == "1")
+    {
+
+    }
+    else if (is_in(choice, variants_exp))
+    {
+
+    }
+    else if (is_in(choice, variants_pos))
+    {
+
+    }
+    else if (choice == "16")
+    {
+
+    }
+    else
+    {
+
+    }
 }
 
 void get_transactions(std::map<std::string, User>& users, std::string& active_user)
 {
-
+    clear_screen();
 }
 
 void budgets(std::map<std::string, User>& users, std::string& active_user)
 {
-
+    clear_screen();
 }
 
 void view_statistics(std::map<std::string, User>& users, std::string& active_user)
 {
-
+    clear_screen();
 }
 
-void main_menu(std::map<std::string, User>& users, std::string& active_user)
+void main_menu(std::map<std::string, User>& users, std::string& active_user, bool& is_working, bool& is_in_account)
 {
     clear_screen();
 
-    std::cout << "Hello, " << users[active_user].name << '\n';
+    std::cout << "Hello, ";
+    switch_color("yellow");
+    std::cout << users[active_user].name << '\n';
+    switch_color("white");
     std::cout << "Here are some information about your account:\n"
               << "Login: " << users[active_user].login << '\n'
               << "Password: " << users[active_user].password << '\n'
@@ -332,7 +431,7 @@ void main_menu(std::map<std::string, User>& users, std::string& active_user)
                   << "2. View transaction history\n"
                   << "3. Set the budget\n"
                   << "4. View statistics\n"
-                  << "5. Sign out of the account\n";
+                  << "5. Sign out\n";
         std::cin >> action;
         if (action == "1")
         {
@@ -353,6 +452,8 @@ void main_menu(std::map<std::string, User>& users, std::string& active_user)
         else if (action == "5")
         {
             std::cout << "Saving your data and exiting...\n";
+            Sleep(3000);
+            is_in_account = false;
             return;
         }
         else
@@ -369,9 +470,19 @@ int main()
 
     std::string active_user;
 
-    authorisation(users, active_user);
+    bool is_working = true;
+    bool is_in_account = false;
 
-    main_menu(users, active_user);
-
+    while (is_working)
+    {
+        if (not is_in_account)
+        {
+            authorisation(users, active_user, is_working, is_in_account);
+        }
+        else
+        {
+            main_menu(users, active_user, is_working, is_in_account);
+        }
+    }
     save("../users.csv", users);
 }
