@@ -3,7 +3,8 @@
 #include "string"
 #include "vector"
 #include "map"
-#include "ctime"
+#include "chrono"
+#include "iomanip"
 #include "limits"
 #include "windows.h"
 #include "regex"
@@ -14,7 +15,7 @@ struct Transaction
     float value = 0.0;
     std::string description;
     std::string category; //TODO ENUM WITH CATEGORIES?
-    std::string transfer = "0";
+    std::string transfer = "0"; //TODO REMOVE IT
     std::string datetime;
 };
 
@@ -52,6 +53,17 @@ void clear_screen(char fill = ' ')
     FillConsoleOutputCharacter(console, fill, cells, tl, &written);
     FillConsoleOutputAttribute(console, s.wAttributes, cells, tl, &written);
     SetConsoleCursorPosition(console, tl);
+}
+
+std::string get_current_datetime()
+{
+    auto now = std::chrono::system_clock::now();
+    time_t current_time = std::chrono::system_clock::to_time_t(now);
+    std::tm tm = *std::localtime(&current_time);
+    std::stringstream ss;
+    ss << std::put_time(&tm, "%Y.%m.%d %H:%M:%S");
+    std::string datetime = ss.str();
+    return datetime;
 }
 
 void load_db(std::string const& path, std::vector<Transaction>& data)
@@ -214,8 +226,9 @@ void Login(std::map<std::string, User>& users, std::string& active_user, bool& i
     }
     else if (users.contains(login))
     {
-        bool is_password_correct = false;
+        bool is_password_correct;
         do {
+            is_password_correct = false;
             std::cout << "Enter your password: ";
             std::cin >> password;
             if (users[login].password == password)
@@ -260,11 +273,12 @@ void Registration(std::map<std::string, User>& users, std::string& active_user, 
         Login(users, active_user, is_working, is_in_account);
         return;
     }
-    else if (not users.contains(login))
+    else if (not users.contains(login) and (login.length() >= 4))
     {
-        bool is_password_correct = false;
+        bool is_password_correct;
         std::regex password_pattern("^(?=.*[A-Z])(?=.*\\d)(?=.*\\W).{8,}$");
         do {
+            is_password_correct = false;
             std::cout << "Make up a password: ";
             std::cin >> password;
             if (std::regex_match(password, password_pattern))
@@ -289,9 +303,16 @@ void Registration(std::map<std::string, User>& users, std::string& active_user, 
             }
         } while (not is_password_correct);
     }
-    else
+    else if (users.contains(login) and (login.length() >= 4))
     {
         std::cout << "This login is already registered. Try another or login.\n";
+        Sleep(3000);
+        Registration(users, active_user, is_working, is_in_account);
+        return;
+    }
+    else
+    {
+        std::cout << "This login is too short. It must to be at least 4 characters long.\nTry again.\n";
         Sleep(3000);
         Registration(users, active_user, is_working, is_in_account);
         return;
@@ -367,20 +388,88 @@ void new_transaction(std::map<std::string, User>& users, std::string& active_use
     std::string choice;
     std::cin >> choice;
     std::vector<std::string> const variants_exp = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "11"};
-    std::vector<std::string> const variants_pos = {"12", "13", "14", "15"};
+    std::vector<std::string> const variants_inc = {"12", "13", "14", "15"};
+    clear_screen();
     if (choice == "0")
     {
         return;
     }
     else if (choice == "1")
     {
+        bool is_login_correct;
+        do {
+            is_login_correct = true;
+            std::cout << "Enter the login of the person you want to transfer funds to\nOr type 0 to get back: ";
+            std::string login;
+            std::cin >> login;
+            if (login == "0")
+            {
+                new_transaction(users, active_user);
+                return;
+            }
+            else if (login == active_user)
+            {
+                std::cout << "You can't transfer funds to yourself! Try another category to do this.\n";
+                Sleep(3000);
+                new_transaction(users, active_user);
+                return;
+            }
+            else if (users.contains(login))
+            {
+                bool is_value_correct;
+                do {
+                    is_value_correct = true;
+                    std::cout << "Enter how much money do you want to transfer: ";
+                    std::string value_str;
+                    std::cin >> value_str;
+                    std::regex value_pattern("^[0-9]+(\\.[0-9]{0,2})?$");
+                    if (std::regex_match(value_str, value_pattern) and (users[active_user].balance >= std::stof(value_str)))
+                    {
+                        float const value = std::stof(value_str);
+                        std::string const description_to = "Transfer to " + login;
+                        std::string const description_from = "Transfer from " + active_user;
+                        std::string const category = "Transfer";
+                        std::string const transfer = login;
+                        std::string const datetime = get_current_datetime();
+                        Transaction transaction_from = {value, description_from, category, transfer, datetime};
+                        Transaction transaction_to = {-value, description_to, category, transfer, datetime};
 
+                        users[active_user].data.push_back(transaction_to);
+                        users[login].data.push_back(transaction_from);
+
+                        users[login].balance += value;
+                        users[active_user].balance -= value;
+                    }
+                    else if (std::regex_match(value_str, value_pattern) and (users[active_user].balance < std::stof(value_str)))
+                    {
+                        is_value_correct = false;
+                        std::cout << "You don't have enough money to do this transaction.\nTry another value.\n";
+                        Sleep(3000);
+                        clear_screen();
+                    }
+                    else
+                    {
+                        is_value_correct = false;
+                        std::cout << "It's uncorrected value. Try again.\n";
+                        Sleep(3000);
+                        clear_screen();
+                    }
+                } while (not is_value_correct);
+            }
+            else
+            {
+                is_login_correct = false;
+                std::cout << "There is no user with this login. Try again.\n";
+                Sleep(3000);
+                clear_screen();
+            }
+        } while (not is_login_correct);
     }
     else if (is_in(choice, variants_exp))
     {
 
     }
-    else if (is_in(choice, variants_pos))
+    else if (is_in(choice, variants_inc))
     {
 
     }
@@ -483,6 +572,6 @@ int main()
         {
             main_menu(users, active_user, is_working, is_in_account);
         }
+        save("../users.csv", users);
     }
-    save("../users.csv", users);
 }
