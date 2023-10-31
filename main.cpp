@@ -15,7 +15,6 @@ struct Transaction
     float value = 0.0;
     std::string description;
     std::string category; //TODO ENUM WITH CATEGORIES?
-    std::string transfer = "0"; //TODO REMOVE IT
     std::string datetime;
 };
 
@@ -89,10 +88,9 @@ void load_db(std::string const& path, std::vector<Transaction>& data)
         float value = std::stof(doc.GetColumn<std::string>("value")[i]);
         std::string description = doc.GetColumn<std::string>("description")[i];
         std::string category = doc.GetColumn<std::string>("category")[i];
-        std::string transfer = doc.GetColumn<std::string>("transfer")[i];
         std::string datetime = doc.GetColumn<std::string>("datetime")[i];
 
-        Transaction transaction = {value, description, category, transfer, datetime};
+        Transaction transaction = {value, description, category, datetime};
         data.push_back(transaction);
     }
 }
@@ -112,7 +110,6 @@ void save_db(std::string const& path, std::vector<Transaction> const& data)
     std::vector<std::string> label_line = {"value",
                                            "description",
                                            "category",
-                                           "transfer",
                                            "datetime"};
     int row_index = 0;
     doc.SetRow<std::string>(row_index, label_line);
@@ -123,7 +120,6 @@ void save_db(std::string const& path, std::vector<Transaction> const& data)
         std::vector<std::string> line = {std::to_string(transaction.value),
                                          transaction.description,
                                          transaction.category,
-                                         transaction.transfer,
                                          transaction.datetime};
         doc.SetRow<std::string>(row_index, line);
     }
@@ -363,26 +359,26 @@ bool is_in(std::string const& x, std::vector<std::string> const& a)
     return false;
 }
 
-void new_transaction(std::map<std::string, User>& users, std::string& active_user)
+void new_transaction(std::map<std::string, User>& users, std::string& active_user) //TODO REWRITING OF THIS FUNCTION!
 {
     clear_screen();
 
     std::map<int, std::string> categories = {{1, "Transfer to another person"},
-                                                     {2, "Food & Beverages"},
-                                                     {3, "Entertainment"},
-                                                     {4, "Transportation"},
-                                                     {5, "Health & Medicals"},
-                                                     {6, "Housing & Utilities"},
-                                                     {7, "Clothing & Footwear"},
-                                                     {8, "Education"},
-                                                     {9, "Electronics & Gadgets"},
-                                                     {10, "Travel & Vacation"},
-                                                     {11, "Gifts & Donation"},
-                                                     {12, "Salary"},
-                                                     {13, "Investments"},
-                                                     {14, "Passive Income"},
-                                                     {15, "Sales & Business"},
-                                                     {16, "Other transactions"}};
+                                             {2, "Food & Beverages"},
+                                             {3, "Entertainment"},
+                                             {4, "Transportation"},
+                                             {5, "Health & Medicals"},
+                                             {6, "Housing & Utilities"},
+                                             {7, "Clothing & Footwear"},
+                                             {8, "Education"},
+                                             {9, "Electronics & Gadgets"},
+                                             {10, "Travel & Vacation"},
+                                             {11, "Gifts & Donation"},
+                                             {12, "Salary"},
+                                             {13, "Investments"},
+                                             {14, "Passive Income"},
+                                             {15, "Sales & Business"},
+                                             {16, "Other transactions"}};
 
     std::cout << "What kind of transaction is it?\n";
     for (auto const& [num, ctg] : categories)
@@ -441,10 +437,9 @@ void new_transaction(std::map<std::string, User>& users, std::string& active_use
                         std::string const description_to = "Transfer to " + login;
                         std::string const description_from = "Transfer from " + active_user;
                         std::string const category = "Transfer";
-                        std::string const transfer = login;
                         std::string const datetime = get_current_datetime();
-                        Transaction transaction_from = {value, description_from, category, transfer, datetime};
-                        Transaction transaction_to = {-value, description_to, category, transfer, datetime};
+                        Transaction transaction_from = {value, description_from, category, datetime};
+                        Transaction transaction_to = {-value, description_to, category, datetime};
 
                         users[active_user].data.push_back(transaction_to);
                         users[login].data.push_back(transaction_from);
@@ -501,7 +496,7 @@ void new_transaction(std::map<std::string, User>& users, std::string& active_use
                 float value = std::stof(value_str);
                 std::string category = categories[std::stoi(choice)];
                 std::string datetime = get_current_datetime();
-                Transaction transaction = {-value, description, category, "0", datetime};
+                Transaction transaction = {-value, description, category, datetime};
                 users[active_user].data.push_back(transaction);
                 users[active_user].balance -= value;
             }
@@ -604,6 +599,9 @@ void main_menu(std::map<std::string, User>& users, std::string& active_user, boo
         else
         {
             is_action_correct = false;
+            std::cout << "Invalid input! Try again.\n";
+            Sleep(3000);
+            clear_screen();
         }
     } while (not is_action_correct);
 }

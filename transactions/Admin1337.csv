@@ -1,14 +1,3 @@
-value;description;category;transfer;datetime
--250.500000;"Grocery shopping";Food;0;"2023.10.26 08:15:00"
--150.250000;"Dinner at a restaurant";Dining;0;"2023.10.25 19:30:00"
-500.000000;"Salary deposit";Income;0;"2023.10.25 14:00:00"
--50.000000;Gasoline;Transportation;0;"2023.10.24 10:45:00"
--75.599998;"Movie tickets";Entertainment;0;"2023.10.23 21:00:00"
--200.000000;"Transfer to coffeeAddict";Transfer;coffeeAddict;"2023.10.22 13:45:00"
--300.000000;"Online shopping";Shopping;0;"2023.10.21 16:30:00"
--15.750000;"Coffee with friends";Dining;0;"2023.10.20 09:00:00"
--40.000000;"Taxi ride";Transportation;0;"2023.10.19 17:15:00"
-1000.000000;"Transfer from musicMaestro";Transfer;musicMaestro;"2023.10.18 12:20:00"
-800.000000;"Transfer from Admin1337";Transfer;Admin1337;"2023.10.30 13:40:12"
--2500.000000;"Transfer to avocado";Transfer;avocado;"2023.10.30 13:53:17"
--129.000000;"Cappuccino Cup";"Food & Beverages";0;"2023.10.31 09:58:41"
+value;description;category;datetime
+-54.000000;"Bus ticket";Transportation;"2023.10.31 18:54:01"
+-125.000000;"Transfer to avocado";Transfer;"2023.10.31 18:55:18"
