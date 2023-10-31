@@ -367,24 +367,31 @@ void new_transaction(std::map<std::string, User>& users, std::string& active_use
 {
     clear_screen();
 
-    std::cout << "What kind of transaction is it?\n"
-              << " 1. Transfer to another person\n"
-              << " 2. Food & Beverages\n"
-              << " 3. Entertainment\n"
-              << " 4. Transportation\n"
-              << " 5. Health & Medicals\n"
-              << " 6. Housing & Utilities\n"
-              << " 7. Clothing & Footwear\n"
-              << " 8. Education\n"
-              << " 9. Electronics & Gadgets\n"
-              << "10. Travel & Vacation\n"
-              << "11. Gifts & Donation\n"
-              << "12. Salary\n"
-              << "13. Investments\n"
-              << "14. Passive Income\n"
-              << "15. Sales & Business\n"
-              << "16. Other transactions\n"
-              << "\n\nOr type 0 to return to the main menu.\n";
+    std::map<int, std::string> categories = {{1, "Transfer to another person"},
+                                                     {2, "Food & Beverages"},
+                                                     {3, "Entertainment"},
+                                                     {4, "Transportation"},
+                                                     {5, "Health & Medicals"},
+                                                     {6, "Housing & Utilities"},
+                                                     {7, "Clothing & Footwear"},
+                                                     {8, "Education"},
+                                                     {9, "Electronics & Gadgets"},
+                                                     {10, "Travel & Vacation"},
+                                                     {11, "Gifts & Donation"},
+                                                     {12, "Salary"},
+                                                     {13, "Investments"},
+                                                     {14, "Passive Income"},
+                                                     {15, "Sales & Business"},
+                                                     {16, "Other transactions"}};
+
+    std::cout << "What kind of transaction is it?\n";
+    for (auto const& [num, ctg] : categories)
+    {
+        if (num < 10) std::cout << ' ';
+        std::cout << num << ". " << ctg << '\n';
+    }
+    std::cout << "\n\nOr type 0 to return to the main menu.\n";
+
     std::string choice;
     std::cin >> choice;
     std::vector<std::string> const variants_exp = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "11"};
@@ -394,7 +401,7 @@ void new_transaction(std::map<std::string, User>& users, std::string& active_use
     {
         return;
     }
-    else if (choice == "1")
+    else if (choice == "1") // transfer
     {
         bool is_login_correct;
         do {
@@ -419,11 +426,16 @@ void new_transaction(std::map<std::string, User>& users, std::string& active_use
                 bool is_value_correct;
                 do {
                     is_value_correct = true;
-                    std::cout << "Enter how much money do you want to transfer: ";
+                    std::cout << "Enter how much money do you want to transfer or 0 to get back: ";
                     std::string value_str;
                     std::cin >> value_str;
                     std::regex value_pattern("^[0-9]+(\\.[0-9]{0,2})?$");
-                    if (std::regex_match(value_str, value_pattern) and (users[active_user].balance >= std::stof(value_str)))
+                    if (value_str == "0")
+                    {
+                        new_transaction(users, active_user);
+                        return;
+                    }
+                    else if (std::regex_match(value_str, value_pattern) and (users[active_user].balance >= std::stof(value_str)))
                     {
                         float const value = std::stof(value_str);
                         std::string const description_to = "Transfer to " + login;
@@ -465,21 +477,65 @@ void new_transaction(std::map<std::string, User>& users, std::string& active_use
             }
         } while (not is_login_correct);
     }
-    else if (is_in(choice, variants_exp))
+    else if (is_in(choice, variants_exp)) // expenses
+    {
+        std::cout << "Write the short description of the transaction: ";
+        char description[32];
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin.getline(description, 32);
+
+        bool is_value_correct;
+        do {
+            is_value_correct = true;
+            std::cout << "Enter the value of the expense or 0 to get back: ";
+            std::string value_str;
+            std::cin >> value_str;
+            std::regex value_pattern("^[0-9]+(\\.[0-9]{0,2})?$");
+            if (value_str == "0")
+            {
+                new_transaction(users, active_user);
+                return;
+            }
+            else if (std::regex_match(value_str, value_pattern) and (users[active_user].balance >= std::stof(value_str)))
+            {
+                float value = std::stof(value_str);
+                std::string category = categories[std::stoi(choice)];
+                std::string datetime = get_current_datetime();
+                Transaction transaction = {-value, description, category, "0", datetime};
+                users[active_user].data.push_back(transaction);
+                users[active_user].balance -= value;
+            }
+            else if (std::regex_match(value_str, value_pattern) and (users[active_user].balance < std::stof(value_str)))
+            {
+                std::cout << "You don't have enough money to make this transaction!\nReturning to the main menu...";
+                Sleep(3000);
+                return;
+
+            }
+            else
+            {
+                is_value_correct = false;
+                std::cout << "Invalid input! Try again.\n";
+                Sleep(3000);
+                clear_screen();
+            }
+        } while (not is_value_correct);
+
+    }
+    else if (is_in(choice, variants_inc)) // incomes
     {
 
     }
-    else if (is_in(choice, variants_inc))
-    {
-
-    }
-    else if (choice == "16")
+    else if (choice == "16") // other
     {
 
     }
     else
     {
-
+        std::cout << "Invalid input! Try again.\n";
+        Sleep(3000);
+        new_transaction(users, active_user);
+        return;
     }
 }
 
