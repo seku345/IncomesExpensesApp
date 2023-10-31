@@ -1,3 +1,5 @@
 value;description;category;datetime
 -54.000000;"Bus ticket";Transportation;"2023.10.31 18:54:01"
 -125.000000;"Transfer to avocado";Transfer;"2023.10.31 18:55:18"
+500.000000;"some transaction";"Other transactions";"2023.10.31 19:24:57"
+-234.000000;"some expense";"Other transactions";"2023.10.31 19:25:13"

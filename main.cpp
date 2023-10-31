@@ -519,11 +519,83 @@ void new_transaction(std::map<std::string, User>& users, std::string& active_use
     }
     else if (is_in(choice, variants_inc)) // incomes
     {
+        std::cout << "Write the short description of the transaction: ";
+        char description[32];
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin.getline(description, 32);
 
+        bool is_value_correct;
+        do {
+            is_value_correct = true;
+            std::cout << "Enter the value of the income or 0 to get back: ";
+            std::string value_str;
+            std::cin >> value_str;
+            std::regex value_pattern("^[0-9]+(\\.[0-9]{0,2})?$");
+            if (value_str == "0")
+            {
+                new_transaction(users, active_user);
+                return;
+            }
+            else if (std::regex_match(value_str, value_pattern))
+            {
+                float value = std::stof(value_str);
+                std::string category = categories[std::stoi(choice)];
+                std::string datetime = get_current_datetime();
+                Transaction transaction = {value, description, category, datetime};
+                users[active_user].data.push_back(transaction);
+                users[active_user].balance += value;
+            }
+            else
+            {
+                is_value_correct = false;
+                std::cout << "Invalid input! Try again.\n";
+                Sleep(3000);
+                clear_screen();
+            }
+        } while (not is_value_correct);
     }
     else if (choice == "16") // other
     {
+        std::cout << "Write the short description of the transaction: ";
+        char description[32];
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin.getline(description, 32);
 
+        bool is_value_correct;
+        do {
+            is_value_correct = true;
+            std::cout << "Enter the value of the transaction (with - if it's expense or without if no)\n or 0 to get back: ";
+            std::string value_str;
+            std::cin >> value_str;
+            std::regex value_pattern("^-{0,1}[0-9]+(\\.[0-9]{0,2})?$");
+            if (value_str == "0")
+            {
+                new_transaction(users, active_user);
+                return;
+            }
+            else if (std::regex_match(value_str, value_pattern) and ((users[active_user].balance >= std::stof(value_str)) and (std::stof(value_str) < 0) or (std::stof(value_str) > 0)))
+            {
+                float value = std::stof(value_str);
+                std::string category = categories[std::stoi(choice)];
+                std::string datetime = get_current_datetime();
+                Transaction transaction = {value, description, category, datetime};
+                users[active_user].data.push_back(transaction);
+                users[active_user].balance += value;
+            }
+            else if (std::regex_match(value_str, value_pattern) and ((users[active_user].balance < std::stof(value_str)) and (std::stof(value_str) < 0)))
+            {
+                std::cout << "You don't have enough money to make this transaction!\nReturning to the main menu...";
+                Sleep(3000);
+                return;
+            }
+            else
+            {
+                is_value_correct = false;
+                std::cout << "Invalid input! Try again.\n";
+                Sleep(3000);
+                clear_screen();
+            }
+        } while (not is_value_correct);
     }
     else
     {
