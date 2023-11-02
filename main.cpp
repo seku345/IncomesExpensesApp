@@ -14,7 +14,7 @@ struct Transaction
 {
     float value = 0.0;
     std::string description;
-    std::string category; //TODO ENUM WITH CATEGORIES?
+    std::string category;
     std::string datetime;
 };
 
@@ -359,7 +359,7 @@ bool is_in(std::string const& x, std::vector<std::string> const& a)
     return false;
 }
 
-void new_transaction(std::map<std::string, User>& users, std::string& active_user) //TODO REWRITING OF THIS FUNCTION!
+void new_transaction(std::map<std::string, User>& users, std::string& active_user) //TODO REWRITING OF THIS FUNCTION!!! (I HATE IT.)
 {
     clear_screen();
 
@@ -606,9 +606,85 @@ void new_transaction(std::map<std::string, User>& users, std::string& active_use
     }
 }
 
+int max_length(std::vector<std::string> const& vec)
+{
+    int max = 0;
+    for (std::string const& s : vec)
+    {
+        max = std::max(max, int(s.length()));
+    }
+    return max;
+}
+
+std::string multi_string(std::string const& s, int const& n)
+{
+    std::string r;
+    for (int i = 0; i < n; ++i)
+    {
+        r += s;
+    }
+    return r;
+}
+
+void transactions_menu(std::map<std::string, User>& users, std::string& active_user)
+{
+    std::cout << "Choose what you want to do:\n"
+              << "Bla-bla-bla\n"
+              << "\nOr type 0 to get back to the main menu\n";
+    std::string choice;
+    std::cin >> choice;
+    if (choice == "0")
+    {
+        return;
+    }
+    else
+    {
+
+    }
+}
+
 void get_transactions(std::map<std::string, User>& users, std::string& active_user)
 {
     clear_screen();
+
+    // getting vectors-columns
+    size_t const data_size = users[active_user].data.size();
+    std::vector<std::string> value_column(data_size+1);
+    value_column[0] = "Value";
+    std::vector<std::string> description_column(data_size+1);
+    description_column[0] = "Description";
+    std::vector<std::string> category_column(data_size+1);
+    category_column[0] = "Category";
+    std::vector<std::string> datetime_column(data_size+1);
+    datetime_column[0] = "Datetime";
+    for (size_t i = 0; i < data_size; ++i)
+    {
+        std::ostringstream stream;
+        float value = users[active_user].data[i].value;
+        stream << std::fixed << std::setprecision(2) << value;
+        std::string value_str = stream.str();
+        value_column[i+1] = value_str;
+        description_column[i+1] = users[active_user].data[i].description;
+        category_column[i+1] = users[active_user].data[i].category;
+        datetime_column[i+1] = users[active_user].data[i].datetime;
+    }
+
+    // getting max lengths
+    int max_value_length = max_length(value_column);
+    int max_description_length = max_length(description_column);
+    int max_category_length = max_length(category_column);
+    int max_datetime_length = max_length(datetime_column);
+
+    for (int i = 0; i < data_size+1; ++i)
+    {
+        std::cout << value_column[i] + multi_string(" ", max_value_length - int(value_column[i].length()) + 2)
+                  << description_column[i] + multi_string(" ", max_description_length - int(description_column[i].length()) + 2)
+                  << category_column[i] + multi_string(" ", max_category_length - int(category_column[i].length()) + 2)
+                  << datetime_column[i] + multi_string(" ", max_datetime_length - int(datetime_column[i].length()) + 2)
+                  << '\n';
+    }
+    std::cout << '\n';
+    transactions_menu(users, active_user);
 }
 
 void budgets(std::map<std::string, User>& users, std::string& active_user)
