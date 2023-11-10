@@ -630,7 +630,7 @@ void transactions_menu(std::map<std::string, User>& users, std::string& active_u
 {
     std::cout << "Choose what you want to do:\n"
               << "Bla-bla-bla\n"
-              << "\nOr type 0 to get back to the main menu\n";
+              << "\nOr type 0 to get back to the main menu.\n";
     std::string choice;
     std::cin >> choice;
     if (choice == "0")
@@ -692,9 +692,107 @@ void budgets(std::map<std::string, User>& users, std::string& active_user)
     clear_screen();
 }
 
+//void calc_and_draw_diagram(std::map<std::string, float> const& total_value_by_category)
+//{
+//    std::map<std::string, std::string> category_colors = {{1, "Transfer to another person"},
+//                                                          {2, "Food & Beverages"},
+//                                                          {3, "Entertainment"},
+//                                                          {4, "Transportation"},
+//                                                          {5, "Health & Medicals"},
+//                                                          {6, "Housing & Utilities"},
+//                                                          {7, "Clothing & Footwear"},
+//                                                          {8, "Education"},
+//                                                          {9, "Electronics & Gadgets"},
+//                                                          {10, "Travel & Vacation"},
+//                                                          {11, "Gifts & Donation"},
+//                                                          {12, "Salary"},
+//                                                          {13, "Investments"},
+//                                                          {14, "Passive Income"},
+//                                                          {15, "Sales & Business"},
+//                                                          {16, "Other transactions"}};
+//    for (auto const& [category, total_value] : total_value_by_category)
+//    {
+//
+//    }
+//}
+
+bool is_date_within_last_week(std::string const& datetime)
+{
+    time_t cur_time = std::time(nullptr);
+    tm* cur_tm = std::localtime(&cur_time);
+
+    tm last_week_start_tm = *cur_tm;
+    last_week_start_tm.tm_mday -= 7;
+
+}
+
+bool is_date_within_last_month(std::string const& datetime)
+{
+
+}
+
+bool is_date_within_last_year(std::string const& datetime)
+{
+
+}
+
 void view_statistics(std::map<std::string, User>& users, std::string& active_user)
 {
     clear_screen();
+
+    std::cout << "Choose the period you want to see:\n"
+              << "1. Today\n"
+              << "2. Last week\n"
+              << "3. Last month\n"
+              << "4. Last year\n"
+              << "5. All time\n"
+              << "\nOr type 0 to get back to the main menu.\n";
+    std::string choice;
+    std::cin >> choice;
+    std::vector<Transaction> transactions;
+    if (choice == "0")
+    {
+        return;
+    }
+    else if (choice == "1")
+    {
+        for (Transaction const& transaction : users[active_user].data)
+        {
+            std::string const date = transaction.datetime.substr(0, transaction.datetime.find(' '));
+            std::string const cur_date = get_current_datetime().substr(0, get_current_datetime().find(' '));
+
+            if (date == cur_date)
+            {
+                transactions.push_back(transaction);
+            }
+        }
+    }
+    else if (choice == "2")
+    {
+
+    }
+    else if (choice == "3")
+    {
+
+    }
+    else if (choice == "4")
+    {
+
+    }
+    else if (choice == "5")
+    {
+
+    }
+    else
+    {
+        std::cout << "Invalid input! Try again.\n";
+        Sleep(3000);
+        view_statistics(users, active_user);
+        return;
+    }
+    std::map<std::string, int> total_income;
+    std::map<std::string, int> total_expense;
+    
 }
 
 void main_menu(std::map<std::string, User>& users, std::string& active_user, bool& is_working, bool& is_in_account)
